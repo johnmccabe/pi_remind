@@ -29,7 +29,7 @@ import httplib2
 import numpy as np
 import oauth2client
 import pytz
-import unicornhat as lights
+import blinkt as lights
 from apiclient import discovery
 from dateutil import parser
 from oauth2client import client
@@ -87,12 +87,12 @@ def do_swirl(duration):
                 r = int(max(0, min(255, r)))
                 g = int(max(0, min(255, g)))
                 b = int(max(0, min(255, b)))
-                lights.set_pixel(x, y, r, g, b)
+                lights.set_pixel(x, r, g, b)
         step += 1
         lights.show()
         time.sleep(0.01)
     # turn off all lights when you're done
-    lights.off()
+    lights.clear()
 
 
 def show_activity_light(status):
@@ -110,13 +110,13 @@ def show_activity_light(status):
         # increment the current light (to the next one)
         current_activity_light += 1
         # set the pixel color
-        lights.set_pixel(current_activity_light, 0, 0, 128, 0)
+        lights.set_pixel(current_activity_light, 0, 128, 0)
         # show the pixel
         lights.show()
     else:
-        # off? Ok, turn all of the lights off (no need to check for the specific light as we're just blanking
+        # off? Ok, turn all of the lights.clear (no need to check for the specific light as we're just blanking
         # the screen
-        lights.off()
+        lights.clear()
 
 
 def flash_all_lights(flash_count, delay, red, green, blue):
@@ -125,10 +125,10 @@ def flash_all_lights(flash_count, delay, red, green, blue):
     for index in range(flash_count):
         for y in range(8):
             for x in range(8):
-                lights.set_pixel(x, y, red, green, blue)
+                lights.set_pixel(x, red, green, blue)
         lights.show()
         time.sleep(delay)
-        lights.off()
+        lights.clear()
         time.sleep(delay)
 
 
@@ -145,10 +145,10 @@ def flash_random_lights(flash_count, delay):
                 r = int(rgb[0] * 255.0)
                 g = int(rgb[1] * 255.0)
                 b = int(rgb[2] * 255.0)
-                lights.set_pixel(x, y, r, g, b)
+                lights.set_pixel(x, r, g, b)
         lights.show()
         time.sleep(delay)
-        lights.off()
+        lights.clear()
         time.sleep(delay)
 
 
@@ -250,7 +250,7 @@ def get_next_event(search_limit):
         # not much else we can do here except to skip this attempt and try again later
         print('Error connecting to calendar:', sys.exc_info()[0], '\n')
         # light up the array with red LEDs to indicate a problem
-        flash_all_lights(1, 2, 255, 0, 0)
+        flash_all_lights(1, 0.5, 255, 0, 0)
     # if we got this far and haven't returned anything, then there's no appointments in the specified time
     # range, or we had an error, so...
     return None
